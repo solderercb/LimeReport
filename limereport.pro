@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
 
+system(echo BUILD_DIR = $$OUT_PWD > $$PWD/limereport.outpwd)
+
 include(common.pri)
 
 CONFIG += ordered
@@ -10,14 +12,14 @@ CONFIG(zint) {
 
 SUBDIRS += \
         limereport \
-        demo_r1 \
-        demo_r2 \
-        designer
+#        demo_r1 \
+#        demo_r2 \
+#        designer
 
 
 if(equals(QT_MAJOR_VERSION, 5) : greaterThan(QT_MINOR_VERSION, 1)) | equals(QT_MAJOR_VERSION, 6) {
-    SUBDIRS += console \
-        lrdview
+#    SUBDIRS += console \
+#        lrdview
 
 }
 

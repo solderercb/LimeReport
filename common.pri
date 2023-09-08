@@ -91,10 +91,6 @@ CONFIG(release, debug|release) {
     BUILD_TYPE = debug
 }
 
-BUILD_DIR = $${BINARY_RESULT_DIR}/build/$${QT_VERSION}
-
-DEST_INCLUDE_DIR = $$PWD/include
-
 unix{
     ARCH_DIR       = $${OUT_PWD}/unix
     ARCH_TYPE      = unix
@@ -129,8 +125,14 @@ win32 {
     }
 }
 
-DEST_LIBS      = $${BUILD_DIR}/$${ARCH_TYPE}/$${BUILD_TYPE}/lib
-DEST_BINS      = $${BUILD_DIR}/$${ARCH_TYPE}/$${BUILD_TYPE}/$${TARGET}
+SRC_ROOT       = $${PWD}     # LimeReport sources
+
+!exists($$SRC_ROOT/limereport.outpwd){
+    error("Something went wrong, can't find" $$SRC_ROOT/limereport.outpwd)
+}
+include($$SRC_ROOT/limereport.outpwd)
+DEST_LIBS      = $${BUILD_DIR}/lib                        # e.g. LimeReport/Desktop_Qt_5_15_4_mingw81_64/release/lib
+DEST_BINS      = $${BUILD_DIR}/$${TARGET}                 # e.g. LimeReport/Desktop_Qt_5_15_4_mingw81_64/release/designer
 
 MOC_DIR        = $${ARCH_DIR}/$${BUILD_TYPE}/moc
 UI_DIR         = $${ARCH_DIR}/$${BUILD_TYPE}/ui
