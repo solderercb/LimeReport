@@ -408,7 +408,10 @@ void DataBrowser::initConnections()
     ui->dataTree->clear();
     QList<QTreeWidgetItem *>items;
 
-    QStringList connections = QSqlDatabase::connectionNames();
+    QStringList connections;
+//    QStringList connections = QSqlDatabase::connectionNames();
+    if (QSqlDatabase::connectionNames().contains("connMain"))
+        connections << "connMain";      // для моего проекта в отчете достаточно одного соединения
     foreach(QString connectionName, m_report->dataManager()->connectionNames()){
         if (!connections.contains(connectionName,Qt::CaseInsensitive)){
             connections.append(connectionName);

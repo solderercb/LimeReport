@@ -66,7 +66,49 @@ class PageItemDesignIntf : public ItemsContainerDesignInft
     Q_PROPERTY(bool mixWithPriorPage READ mixWithPriorPage WRITE setMixWithPriorPage)
     friend class ReportRender;
 public:
-#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 1))
+#if (QT_VERSION > QT_VERSION_CHECK(6, 0, 0))
+    enum Orientation { Portrait = QPageLayout::Portrait, Landscape = QPageLayout::Landscape };
+
+    enum PrintBehavior {Scale, Split};
+
+    enum PageSize {
+        Letter = QPageSize::Letter, Legal = QPageSize::Legal, Executive = QPageSize::Executive, A0 = QPageSize::A0,
+        A1 = QPageSize::A1, A2 = QPageSize::A2, A3 = QPageSize::A3, A4 = QPageSize::A4, A5 = QPageSize::A5,
+        A6 = QPageSize::A6, A7 = QPageSize::A7, A8 = QPageSize::A8, A9 = QPageSize::A9, A10 = QPageSize::A10,
+        B0 = QPageSize::B0, B1 = QPageSize::B1, B2 = QPageSize::B2, B3 = QPageSize::B3, B4 = QPageSize::B4,
+        B5 = QPageSize::B5, B6 = QPageSize::B6, B7 = QPageSize::B7, B8 = QPageSize::B8, B9 = QPageSize::B9,
+        B10 = QPageSize::B10, C5E = QPageSize::C5E, Comm10E = QPageSize::Comm10E, DLE = QPageSize::DLE,
+        Folio = QPageSize::Folio, Ledger = QPageSize::Ledger, Tabloid = QPageSize::Tabloid, Custom = QPageSize::Custom,
+        A3Extra = QPageSize::A3Extra, A4Extra = QPageSize::A4Extra, A4Plus = QPageSize::A4Plus, A4Small = QPageSize::A4Small,
+        A5Extra = QPageSize::A5Extra, B5Extra = QPageSize::B5Extra, JisB0 = QPageSize::JisB0, JisB1 = QPageSize::JisB1,
+        JisB2 = QPageSize::JisB2, JisB3 = QPageSize::JisB3, JisB4 = QPageSize::JisB4, JisB5 = QPageSize::JisB5,
+        JisB6 = QPageSize::JisB6, JisB7 = QPageSize::JisB7, JisB8 = QPageSize::JisB8, JisB9 = QPageSize::JisB9,
+        JisB10 = QPageSize::JisB10, AnsiC = QPageSize::AnsiC, AnsiD = QPageSize::AnsiD, AnsiE = QPageSize::AnsiE,
+        LegalExtra = QPageSize::LegalExtra, LetterExtra = QPageSize::LetterExtra, LetterPlus = QPageSize::LetterPlus,
+        LetterSmall = QPageSize::LetterSmall, TabloidExtra = QPageSize::TabloidExtra, ArchA = QPageSize::ArchA,
+        ArchB = QPageSize::ArchB, ArchC = QPageSize::ArchC, ArchD = QPageSize::ArchD, ArchE = QPageSize::ArchE,
+        Imperial7x9 = QPageSize::Imperial7x9, Imperial8x10 = QPageSize::Imperial8x10, Imperial9x11 = QPageSize::Imperial9x11,
+        Imperial9x12 = QPageSize::Imperial9x12, Imperial10x11 = QPageSize::Imperial10x11, Imperial10x13 = QPageSize::Imperial10x13,
+        Imperial10x14 = QPageSize::Imperial10x14, Imperial12x11 = QPageSize::Imperial12x11, Imperial15x11 = QPageSize::Imperial15x11,
+        ExecutiveStandard = QPageSize::ExecutiveStandard, Note = QPageSize::Note, Quarto = QPageSize::Quarto,
+        Statement = QPageSize::Statement, SuperA = QPageSize::SuperA, SuperB = QPageSize::SuperB, Postcard = QPageSize::Postcard,
+        DoublePostcard = QPageSize::DoublePostcard, Prc16K = QPageSize::Prc16K, Prc32K = QPageSize::Prc32K,
+        Prc32KBig = QPageSize::Prc32KBig, FanFoldUS = QPageSize::FanFoldUS, FanFoldGerman = QPageSize::FanFoldGerman,
+        FanFoldGermanLegal = QPageSize::FanFoldGermanLegal, EnvelopeB4 = QPageSize::EnvelopeB4, EnvelopeB5 = QPageSize::EnvelopeB5,
+        EnvelopeB6 = QPageSize::EnvelopeB6, EnvelopeC0 = QPageSize::EnvelopeC0, EnvelopeC1 = QPageSize::EnvelopeC1,
+        EnvelopeC2 = QPageSize::EnvelopeC2, EnvelopeC3 = QPageSize::EnvelopeC3, EnvelopeC4 = QPageSize::EnvelopeC4,
+        EnvelopeC6 = QPageSize::EnvelopeC6, EnvelopeC65 = QPageSize::EnvelopeC65, EnvelopeC7 = QPageSize::EnvelopeC7,
+        Envelope9 = QPageSize::Envelope9, Envelope11 = QPageSize::Envelope11, Envelope12 = QPageSize::Envelope12,
+        Envelope14 = QPageSize::Envelope14, EnvelopeMonarch = QPageSize::EnvelopeMonarch, EnvelopePersonal = QPageSize::EnvelopePersonal,
+        EnvelopeChou3 = QPageSize::EnvelopeChou3, EnvelopeChou4 = QPageSize::EnvelopeChou4, EnvelopeInvite = QPageSize::EnvelopeInvite,
+        EnvelopeItalian = QPageSize::EnvelopeItalian, EnvelopeKaku2 = QPageSize::EnvelopeKaku2, EnvelopeKaku3 = QPageSize::EnvelopeKaku3,
+        EnvelopePrc1 = QPageSize::EnvelopePrc1, EnvelopePrc2 = QPageSize::EnvelopePrc2, EnvelopePrc3 = QPageSize::EnvelopePrc3,
+        EnvelopePrc4 = QPageSize::EnvelopePrc4, EnvelopePrc5 = QPageSize::EnvelopePrc5, EnvelopePrc6 = QPageSize::EnvelopePrc6,
+        EnvelopePrc7 = QPageSize::EnvelopePrc7, EnvelopePrc8 = QPageSize::EnvelopePrc8, EnvelopePrc9 = QPageSize::EnvelopePrc9,
+        EnvelopePrc10 = QPageSize::EnvelopePrc10, EnvelopeYou4 = QPageSize::EnvelopeYou4, LastPageSize = EnvelopeYou4, AnsiA = Letter,
+        AnsiB = Ledger, EnvelopeC5 = C5E, EnvelopeDL = DLE, Envelope10 = Comm10E
+    };
+#elif (QT_VERSION < QT_VERSION_CHECK(5, 15, 1))
     enum Orientation { Portrait = QPrinter::Portrait, Landscape = QPrinter::Landscape };
 
     enum PrintBehavior {Scale, Split};

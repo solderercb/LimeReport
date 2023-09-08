@@ -14,6 +14,8 @@ INCLUDEPATH += \
     $$REPORT_PATH/base \
     $$REPORT_PATH/scripteditor
 
+PRECOMPILED_HEADER = $$REPORT_PATH/stable.h
+
 SOURCES += \
     $$PWD/scripteditor/lrcompletermodel.cpp \
     $$REPORT_PATH/bands/lrpageheader.cpp \
@@ -92,6 +94,7 @@ CONFIG(svg) {
 }
 
 HEADERS += \
+    $$REPORT_PATH/stable.h \
     $$PWD/items/lreditableimageitemintf.h \
     $$PWD/scripteditor/lrcompletermodel.h \
     $$REPORT_PATH/base/lrsingleton.h \

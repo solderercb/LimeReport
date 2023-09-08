@@ -48,6 +48,8 @@ win32 {
 
     DESTDIR = $$DEST_DIR
     RC_FILE += mainicon.rc
+
+    QMAKE_POST_LINK += $$QMAKE_COPY \"$${DEST_DIR}\\$${TARGET}.exe\" \"$${DEST_LIBS}\" $$escape_expand(\\n\\t)
 }
 
 LIBS += -L$${DEST_LIBS}

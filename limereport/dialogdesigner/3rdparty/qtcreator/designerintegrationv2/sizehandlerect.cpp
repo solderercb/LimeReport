@@ -103,10 +103,10 @@ void SizeHandleRect::mousePressEvent(QMouseEvent *e)
         return;
 
     m_startSize = m_curSize = m_resizable->size();
-#if QT_VERSION < QT_VERSION_CHECK(5,15,3)
-    m_startPos = m_curPos = m_resizable->mapFromGlobal(e->globalPos());
-#else
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     m_startPos = m_curPos = m_resizable->mapFromGlobal(e->globalPosition());
+#else
+    m_startPos = m_curPos = m_resizable->mapFromGlobal(e->globalPos());
 #endif
 
 }

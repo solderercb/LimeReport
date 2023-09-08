@@ -6,6 +6,8 @@ CONFIG(debug, debug|release) {
 
 TEMPLATE = lib
 
+CONFIG += precompile_header
+
 CONFIG(static_build) {
     CONFIG += staticlib
 }
@@ -74,14 +76,22 @@ win32 {
     } else {
 	EXTRA_FILES ~= s,/,\\,g
 	BUILD_DIR ~= s,/,\\,g
+        DEST_LIBS ~=  s,/,\\,g
 	DEST_DIR = $$DESTDIR/include
 	DEST_DIR ~= s,/,\\,g
 	DEST_INCLUDE_DIR ~= s,/,\\,g
+        ADDITIONAL_DIR1 = $${PWD}/../../lib6/
+        ADDITIONAL_DIR1 ~= s,/,\\,g
+        ADDITIONAL_DIR2 = $${PWD}/../../bin/
+        ADDITIONAL_DIR2 ~= s,/,\\,g
 
         for(FILE,EXTRA_FILES) {
-    	    QMAKE_POST_LINK += $$QMAKE_COPY \"$$FILE\" \"$${DEST_INCLUDE_DIR}\" $$escape_expand(\\n\\t)
+            QMAKE_POST_LINK += $$QMAKE_COPY \"$$FILE\" \"$${DEST_INCLUDE_DIR}\" $$escape_expand(\\n\\t)
 	}
-	QMAKE_POST_LINK += $$QMAKE_COPY_DIR \"$${DEST_INCLUDE_DIR}\" \"$${DEST_DIR}\"
+        QMAKE_POST_LINK += $$QMAKE_COPY \"$${DEST_LIBS}\*\" \"$${ADDITIONAL_DIR1}\" $$escape_expand(\\n\\t)
+        QMAKE_POST_LINK += $$QMAKE_COPY \"$${DEST_LIBS}\*\" \"$${ADDITIONAL_DIR2}\" $$escape_expand(\\n\\t)
+        QMAKE_POST_LINK += $$QMAKE_COPY_DIR \"$${DEST_INCLUDE_DIR}\" \"$${ADDITIONAL_DIR1}include\" $$escape_expand(\\n\\t)
+        QMAKE_POST_LINK += $$QMAKE_COPY_DIR \"$${DEST_INCLUDE_DIR}\" \"$${DEST_DIR}\" $$escape_expand(\\n\\t)
     }
 }
 
