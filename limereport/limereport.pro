@@ -36,62 +36,116 @@ CONFIG(staticlib) {
 }
 
 EXTRA_FILES += \
-    $$PWD/lrglobal.h \
-    $$PWD/lrdatasourceintf.h \
-    $$PWD/lrdatasourcemanagerintf.h \
-    $$PWD/lrreportengine.h \
-    $$PWD/lrscriptenginemanagerintf.h \
-    $$PWD/lrcallbackdatasourceintf.h \
-    $$PWD/lrpreviewreportwidget.h \
-    $$PWD/lrreportdesignwindowintrerface.h \
-    $$PWD/lrpreparedpagesintf.h
+    lrglobal.h \
+    lrdatasourceintf.h \
+    lrdatasourcemanagerintf.h \
+    lrreportengine.h \
+    lrscriptenginemanagerintf.h \
+    lrcallbackdatasourceintf.h \
+    lrpreviewreportwidget.h \
+    lrreportdesignwindowintrerface.h \
+    lrpreparedpagesintf.h
 
 include(limereport.pri)
 
+DESTDIR = $${DEST_LIBS} # $${BUILD_DIR}/$${ARCH_TYPE}/$${BUILD_TYPE}/lib
 unix:{
-    DESTDIR = $${DEST_LIBS}
     linux{
-        QMAKE_POST_LINK += mkdir -p \"$${DEST_INCLUDE_DIR}\" $$escape_expand(\\n\\t) # qmake need make mkdir -p on subdirs more than root/
-        for(FILE,EXTRA_FILES) {
-            QMAKE_POST_LINK += $$QMAKE_COPY \"$$FILE\" \"$${DEST_INCLUDE_DIR}\" $$escape_expand(\\n\\t) # inside of libs make /include/files
-        }
+        # qmake need make mkdir -p on subdirs more than root/
+        QMAKE_POST_LINK += mkdir -p \"$${DEST_INCLUDE_DIR}\" $$escape_expand(\\n\\t) # mkdir LimeReport/include
+        QMAKE_POST_LINK += mkdir -p \"$${DESTDIR}/include\" $$escape_expand(\\n\\t) # mkdir $${BUILD_DIR}/$${ARCH_TYPE}/$${BUILD_TYPE}/lib/include
     }
-    macx{
+
         for(FILE,EXTRA_FILES) {
-            QMAKE_POST_LINK += $$QMAKE_COPY \"$$FILE\" \"$${DEST_INCLUDE_DIR}\" $$escape_expand(\\n\\t)
+        QMAKE_POST_LINK += $$QMAKE_COPY \"$$FILE\" \"$${DEST_INCLUDE_DIR}\" $$escape_expand(\\n\\t) # copy  <filename>    LimeReport/include
         }
-        QMAKE_POST_LINK += mkdir -p \"$${DESTDIR}/include\" $$escape_expand(\\n\\t)
-    }
-    QMAKE_POST_LINK += $$QMAKE_COPY_DIR \"$${DEST_INCLUDE_DIR}\" \"$${DESTDIR}\"
+    QMAKE_POST_LINK += $$QMAKE_COPY_DIR \"$${DEST_INCLUDE_DIR}\" \"$${DESTDIR}\"    # copy  LimeReport/include    $${BUILD_DIR}/$${ARCH_TYPE}/$${BUILD_TYPE}/lib
 }
 
 win32 {
-    DESTDIR = $${DEST_LIBS}
     contains(QMAKE_HOST.os, Linux) {
-        QMAKE_POST_LINK += mkdir -p \"$${DEST_INCLUDE_DIR}\" $$escape_expand(\\n\\t) # qmake need make mkdir -p on subdirs more than root/
+        # qmake need make mkdir -p on subdirs more than root/
+        QMAKE_POST_LINK += mkdir -p \"$${DEST_INCLUDE_DIR}\" $$escape_expand(\\n\\t) # mkdir LimeReport/include
+        QMAKE_POST_LINK += mkdir -p \"$${DESTDIR}/include\" $$escape_expand(\\n\\t) # mkdir $${BUILD_DIR}/$${ARCH_TYPE}/$${BUILD_TYPE}/lib/include
         for(FILE,EXTRA_FILES) {
-            QMAKE_POST_LINK += $$QMAKE_COPY \"$$FILE\" \"$${DEST_INCLUDE_DIR}\" $$escape_expand(\\n\\t) # inside of libs make /include/files
+            QMAKE_POST_LINK += $$QMAKE_COPY \"$$FILE\" \"$${DEST_INCLUDE_DIR}\" $$escape_expand(\\n\\t) # copy  <filename>    LimeReport/include
         }
-        QMAKE_POST_LINK += $$QMAKE_COPY_DIR \"$${DEST_INCLUDE_DIR}\" \"$${DESTDIR}\"
+        QMAKE_POST_LINK += $$QMAKE_COPY_DIR \"$${DEST_INCLUDE_DIR}\" \"$${DESTDIR}\"    # copy  LimeReport/include    $${BUILD_DIR}/$${ARCH_TYPE}/$${BUILD_TYPE}/lib
     } else {
+        QMAKE_MKLINK = mklink /H
+
+        # EXPORT_LIBS — путь к директории проекта, использующего LimeReport
+        # EXPORT_BIN - путь к директории bin (в неё будут помещены все исполняемые файлы; для удобства)
+        equals(QT_MAJOR_VERSION, 6){
+            EXPORT_LIBS = $${PWD}/../../lib6    # LimeReport/limereport/../../lib
+        }
+        else {
+            EXPORT_LIBS = $${PWD}/../../lib5
+        }
+        DEST_DIR = $$DESTDIR/include            # $${BUILD_DIR}/$${ARCH_TYPE}/$${BUILD_TYPE}/lib/include
+        EXPORT_BIN = $${PWD}/../bin             # LimeReport/limereport/../bin
+
+        # замена / на \
+        EXPORT_LIBS ~= s,/,\\,g
+        EXPORT_BIN ~= s,/,\\,g
+        DEST_DIR ~= s,/,\\,g
 	EXTRA_FILES ~= s,/,\\,g
 	BUILD_DIR ~= s,/,\\,g
         DEST_LIBS ~=  s,/,\\,g
-	DEST_DIR = $$DESTDIR/include
-	DEST_DIR ~= s,/,\\,g
 	DEST_INCLUDE_DIR ~= s,/,\\,g
-        ADDITIONAL_DIR1 = $${PWD}/../../lib6/
-        ADDITIONAL_DIR1 ~= s,/,\\,g
-        ADDITIONAL_DIR2 = $${PWD}/../../bin/
-        ADDITIONAL_DIR2 ~= s,/,\\,g
+        PWDW = $${PWD}
+        PWDW ~= s,/,\\,g
+
+        ADDITIONAL_DIRS = \
+            \"$${EXPORT_LIBS}\" \               # LimeReport\limereport\..\..\lib
+            \"$${EXPORT_LIBS}\\include\" \      # LimeReport\limereport\..\..\lib\include
+            \"$${EXPORT_BIN}\" \                # LimeReport\bin
+            \"$${DEST_INCLUDE_DIR}\" \          # LimeReport\include
+            \"$${DEST_DIR}\"                    # $${BUILD_DIR}\$${ARCH_TYPE}\$${BUILD_TYPE}\lib\include
+        # обязательно в кавычках
+
+        CONFIG(debug, debug|release){
+            LIB_FILES += \
+                liblimereportd.a \
+                libQtZintd.a \
+                limereportd.dll \
+                limereportd.prl \
+                QtZintd.dll
+        }else{
+            LIB_FILES += \
+                liblimereport.a \
+                libQtZint.a \
+                limereport.dll \
+                limereport.prl \
+                QtZint.dll
+        }
+
+        QMAKE_POST_LINK += $$escape_expand(\\n\\t)
+        QMAKE_POST_LINK += chcp 65001 >nul 2>&1 $$escape_expand(\\n\\t)
+        for(DIR_ITER, ADDITIONAL_DIRS) {
+            DIR_ITER ~=  s,\",,g    # здесь кавычки нужно заменить, т. к. команда exists добавляет свои
+            !exists($${DIR_ITER}){   # подавление вывода mkdir с помощью >nul 2>&1 почему-то приводит к ошибке сборки, поэтому выполняется проверка наличия директории
+    #            message($${DIR_ITER})
+                QMAKE_POST_LINK += mkdir \"$${DIR_ITER}\" $$escape_expand(\\n\\t)
+            }
+        }
 
         for(FILE,EXTRA_FILES) {
-            QMAKE_POST_LINK += $$QMAKE_COPY \"$$FILE\" \"$${DEST_INCLUDE_DIR}\" $$escape_expand(\\n\\t)
-	}
-        QMAKE_POST_LINK += $$QMAKE_COPY \"$${DEST_LIBS}\*\" \"$${ADDITIONAL_DIR1}\" $$escape_expand(\\n\\t)
-        QMAKE_POST_LINK += $$QMAKE_COPY \"$${DEST_LIBS}\*\" \"$${ADDITIONAL_DIR2}\" $$escape_expand(\\n\\t)
-        QMAKE_POST_LINK += $$QMAKE_COPY_DIR \"$${DEST_INCLUDE_DIR}\" \"$${ADDITIONAL_DIR1}include\" $$escape_expand(\\n\\t)
-        QMAKE_POST_LINK += $$QMAKE_COPY_DIR \"$${DEST_INCLUDE_DIR}\" \"$${DEST_DIR}\" $$escape_expand(\\n\\t)
+    #        # >nul 2>&1 отправляет stdout и stderr в NUL
+    #        # include файлы мелкие, поэтому копируем их
+            QMAKE_POST_LINK += $$QMAKE_COPY \"$${PWDW}\\$${FILE}\" \"$${DEST_INCLUDE_DIR}\\\" >nul 2>&1 $$escape_expand(\\n\\t)         # copy  <filename>    LimeReport\include
+            QMAKE_POST_LINK += $$QMAKE_COPY \"$${PWDW}\\$${FILE}\" \"$${DEST_DIR}\\\" >nul 2>&1 $$escape_expand(\\n\\t)                 # copy  <filename>    $${BUILD_DIR}/$${ARCH_TYPE}/$${BUILD_TYPE}/lib/include
+            QMAKE_POST_LINK += $$QMAKE_COPY \"$${PWDW}\\$${FILE}\" \"$${EXPORT_LIBS}\\include\\\" >nul 2>&1 $$escape_expand(\\n\\t)     # copy  <filename>    LimeReport\..\lib\include
+        }
+
+        for(FILE,LIB_FILES){
+            # скомпилированные библиотеки (особенно debug версии) могут иметь внушительный размер, поэтому создаём ссылки на них
+    #        QMAKE_POST_LINK += $$QMAKE_COPY \"$${FILE}\" \"$${EXPORT_LIBS}\\$${FILE}\" $$escape_expand(\\n\\t)
+            QMAKE_POST_LINK += del \"$${EXPORT_LIBS}\\$${FILE}\" 2>NUL $$escape_expand(\\n\\t)                                          # del LimeReport\limereport\..\..\lib\<*.a; *.dll>
+            QMAKE_POST_LINK += del \"$${EXPORT_BIN}\\$${FILE}\" 2>NUL $$escape_expand(\\n\\t)                                           # del LimeReport\bin\<*.a; *.dll>
+            QMAKE_POST_LINK += $$QMAKE_MKLINK \"$${EXPORT_LIBS}\\$${FILE}\" \"$$DEST_LIBS\\$${FILE}\" >nul 2>&1 $$escape_expand(\\n\\t) # mklink LimeReport\..\lib\<file> $${BUILD_DIR}\$${ARCH_TYPE}\$${BUILD_TYPE}\lib\<file>
+            QMAKE_POST_LINK += $$QMAKE_MKLINK \"$${EXPORT_BIN}\\$${FILE}\" \"$$DEST_LIBS\\$${FILE}\" >nul 2>&1 $$escape_expand(\\n\\t)  # mklink LimeReport\bin\<file> $${BUILD_DIR}\$${ARCH_TYPE}\$${BUILD_TYPE}\lib\<file>
+        }
     }
 }
 

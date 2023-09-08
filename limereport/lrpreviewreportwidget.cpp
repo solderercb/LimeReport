@@ -223,7 +223,7 @@ void PreviewReportWidget::lastPage()
     d_ptr->m_changingPage=false;
 }
 
-void PreviewReportWidget::printPages(QPrinter* printer)
+void PreviewReportWidget::print(QPrinter* printer)
 {
     if (!d_ptr->m_reportPages.isEmpty())
         d_ptr->m_report->printPages(
@@ -252,7 +252,7 @@ void PreviewReportWidget::print()
 
     QPrintDialog dialog(printer,QApplication::activeWindow());
     if (dialog.exec()==QDialog::Accepted){
-        printPages(printer);
+        print(printer);
     }
 
 }

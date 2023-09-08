@@ -19,6 +19,8 @@ private:
     QString saveToString();
     QByteArray saveToByteArray();
     void clear();
+    IPreparedPages::PageProps pageProperties(int page = 0);
+
 private:
     bool readPages(ItemsReaderIntf::Ptr reader);
     ReportPages* m_pages;

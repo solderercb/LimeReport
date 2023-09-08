@@ -154,8 +154,8 @@ public:
     ~ReportEngine();
     bool    printReport(QPrinter *printer=0);
     bool    printReport(QMap<QString, QPrinter*> printers, bool printToAllPrinters = false);
-    bool    printPages(ReportPages pages, QPrinter *printer);
     void    printToFile(const QString& fileName);
+    bool    printPages(ReportPages pages, QPrinter *printer);
     QGraphicsScene* createPreviewScene(QObject *parent = 0);
     bool    printToPDF(const QString& fileName);
     bool    exportReport(QString exporterName, const QString &fileName = "", const QMap<QString, QVariant>& params = QMap<QString, QVariant>());
@@ -180,6 +180,7 @@ public:
     void setReportName(const QString& name);
     QString reportName();
     PreviewReportWidget *createPreviewWidget(QWidget *parent = 0);
+    PreviewReportWidget *createPreviewWidget(bool, QWidget *parent = 0);
     void setPreviewWindowTitle(const QString& title);
     void setPreviewWindowIcon(const QIcon& icon);
     void setPreviewPageBackgroundColor(QColor color);
@@ -208,6 +209,7 @@ public:
     bool showPreparedPages(PreviewHints hints = PreviewBarsUserSetting);
     bool prepareReportPages();
     bool printPreparedPages();
+    bool printPreparedPages(QPrinter *printer);
     bool showDesignerModal() const;
     void setShowDesignerModal(bool showDesignerModal);
 

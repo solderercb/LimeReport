@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>535</width>
-    <height>433</height>
+    <width>959</width>
+    <height>603</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,17 +31,17 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QCheckBox" name="checkBox">
-            <property name="layoutDirection">
-             <enum>Qt::RightToLeft</enum>
-            </property>
-            <property name="text">
-             <string>сохранить PDF</string>
+          <item row="2" column="0" colspan="2">
+           <widget class="QComboBox" name="comboBoxPrinters"/>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="spinBoxCopies">
+            <property name="minimum">
+             <number>1</number>
             </property>
            </widget>
           </item>
-          <item row="7" column="0" colspan="2">
+          <item row="6" column="0" colspan="2">
            <spacer name="verticalSpacer">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -54,29 +54,13 @@
             </property>
            </spacer>
           </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QComboBox" name="comboBoxPrinters"/>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLineEdit" name="lineEditMrgLeft"/>
-          </item>
-          <item row="4" column="0" colspan="2">
-           <widget class="QLineEdit" name="lineEditPagesToPrint">
-            <property name="inputMask">
-             <string/>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="checkBox">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
             </property>
-            <property name="placeholderText">
-             <string>страницы, напр., 5-12</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QLineEdit" name="lineEditMrgTop"/>
-          </item>
-          <item row="0" column="1">
-           <widget class="QSpinBox" name="spinBoxCopies">
-            <property name="minimum">
-             <number>1</number>
+            <property name="text">
+             <string>сохранить PDF</string>
             </property>
            </widget>
           </item>
@@ -113,11 +97,25 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
-           <widget class="QLineEdit" name="lineEditMrgRight"/>
+          <item row="4" column="0" colspan="2">
+           <widget class="QLineEdit" name="lineEditPagesToPrint">
+            <property name="inputMask">
+             <string/>
+            </property>
+            <property name="placeholderText">
+             <string>страницы, напр., 5-12</string>
+            </property>
+           </widget>
           </item>
-          <item row="6" column="1">
-           <widget class="QLineEdit" name="lineEditMrgBot"/>
+          <item row="5" column="0" colspan="2">
+           <widget class="QTextEdit" name="textEdit">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -141,6 +139,16 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>spinBoxCopies</tabstop>
+  <tabstop>pushButtonPrint</tabstop>
+  <tabstop>checkBox</tabstop>
+  <tabstop>comboBoxPrinters</tabstop>
+  <tabstop>lineEditPagesToPrint</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
+ <slots>
+  <slot>setPrinter(QString)</slot>
+ </slots>
 </ui>

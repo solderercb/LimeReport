@@ -58,6 +58,48 @@ void PreparedPages::clear()
     m_pages->clear();
 }
 
+IPreparedPages::PageProps PreparedPages::pageProperties(int page)
+{
+    PageItemDesignIntf::Ptr p;
+    IPreparedPages::PageProps pageProps = {
+                                .pageSize = QPageSize(),
+                                .orientation = 0,
+                                .geometry = QRect(),
+                                .leftMargin = 0,
+                                .topMargin = 0,
+                                .rightMargin = 0,
+                                .bottomMargin = 0,
+                                .isSetPageSizeToPrinter = 0,
+                                .endlessHeight = 0,
+                                .heightMM = 0,
+                                .widthMM = 0
+                              };
+
+    if (m_pages->count() > 0 && m_pages->count() > page && page >= 0)
+        p = m_pages->at(page);
+    else p = PageItemDesignIntf::Ptr(0);
+
+    if(p)
+    {
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 1))
+        pageProps.orientation = (QPrinter::Orientation)p->pageOrientation();
+#else
+        pageProps.orientation = (QPageLayout::Orientation)p->pageOrientation();
+#endif
+        pageProps.pageSize = QPageSize((QPageSize::PageSizeId)p->pageSize());
+        pageProps.geometry = p->geometry();
+        pageProps.leftMargin = p->leftMargin();
+        pageProps.topMargin = p->topMargin();
+        pageProps.rightMargin = p->rightMargin();
+        pageProps.bottomMargin = p->bottomMargin();
+        pageProps.isSetPageSizeToPrinter = p->getSetPageSizeToPrinter();
+        pageProps.endlessHeight = p->endlessHeight();
+        pageProps.heightMM = p->heightMM();
+        pageProps.widthMM = p->widthMM();
+    }
+    return pageProps;
+}
+
 bool PreparedPages::readPages(ItemsReaderIntf::Ptr reader)
 {
     clear();

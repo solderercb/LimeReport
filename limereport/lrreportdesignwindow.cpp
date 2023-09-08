@@ -1601,7 +1601,7 @@ void ReportDesignWindow::closeEvent(QCloseEvent * event)
         event->ignore();
         return;
     }
-    if (checkNeedToSave()){    
+//    if (checkNeedToSave()){   // Я сам выполняю проверку на сохранённость бланка отчёта и если выбираю "Нет", диалоговое окно отображается дважды, поэтому условие закомментировал
         m_dataBrowser->closeAllDataWindows();
         writeState();
 #ifdef Q_OS_WIN
@@ -1612,7 +1612,7 @@ void ReportDesignWindow::closeEvent(QCloseEvent * event)
 #endif
         m_eventLoop.exit();
         event->accept();
-    } else event->ignore();
+//    } else event->ignore();
 }
 
 void ReportDesignWindow::resizeEvent(QResizeEvent*)

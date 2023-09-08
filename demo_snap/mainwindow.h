@@ -10,11 +10,14 @@
 #include <QMap>
 #include <QString>
 #include <QVariant>
+#include <QPrinterInfo>
 #include <QPrintPreviewDialog>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
 #include "sqlcreds.h"
+#include <windows.h>
+#include <winspool.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,7 +31,6 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void some_func();
-    QMap<QString, QVariant> *userData;
 
 private slots:
     void on_tabWidget_tabCloseRequested(int index);
@@ -38,10 +40,14 @@ private slots:
 
     void on_pushButton_4_clicked();
 
+    void on_pushButton_5_clicked();
+
 private:
     Ui::MainWindow *ui;
     LimeReport::ReportEngine *m_report;
     LimeReport::ReportDesignWindowInterface* designerWindow;
     QByteArray *DataFile;
+    QMap<QString, QVariant> *report_vars;
+    void printerSettings(QPrinter *printer = nullptr);
 };
 #endif // MAINWINDOW_H

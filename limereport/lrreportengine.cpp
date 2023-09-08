@@ -576,20 +576,31 @@ ReportDesignWindowInterface*ReportEnginePrivate::getDesignerWindow()
     return m_designerWindow;
 }
 
+/* При создании виджета предпросмотра будут выполнены те же операции, что и при вызове метода PreparePages */
 PreviewReportWidget* ReportEnginePrivate::createPreviewWidget(QWidget* parent){
 
     Q_Q(ReportEngine);
     PreviewReportWidget* widget = new PreviewReportWidget(q, parent);
     try{
         dataManager()->setDesignTime(false);
-        ReportPages pages = renderToPages();
+        m_preparedPages = renderToPages();
         dataManager()->setDesignTime(true);
-        if (pages.count()>0)
-            widget->d_ptr->setPages(pages);
+        if (m_preparedPages.count()>0)
+            widget->d_ptr->setPages(m_preparedPages);
     } catch (ReportError &exception){
         saveError(exception.what());
         showError(exception.what());
     }
+    return widget;
+}
+
+PreviewReportWidget *ReportEnginePrivate::createPreviewWidget(ReportPages pages, QWidget *parent)
+{
+    Q_Q(ReportEngine);
+    PreviewReportWidget* widget = new PreviewReportWidget(q, parent);
+    if (pages.count()>0)
+        widget->d_ptr->setPages(pages);
+
     return widget;
 }
 
@@ -1000,6 +1011,11 @@ bool ReportEnginePrivate::prepareReportPages()
 bool ReportEnginePrivate::printPreparedPages()
 {
     return printPages(m_preparedPages, 0);
+}
+
+bool ReportEnginePrivate::printPreparedPages(QPrinter *printer)
+{
+    return printPages(m_preparedPages, printer);
 }
 
 Qt::LayoutDirection ReportEnginePrivate::previewLayoutDirection()
@@ -1509,6 +1525,16 @@ PreviewReportWidget* ReportEngine::createPreviewWidget(QWidget *parent)
     return d->createPreviewWidget(parent);
 }
 
+/* Перегруженный метод, позволяющий отобразить ранее подготовленные (с пом. метода PreparePages) страницы */
+PreviewReportWidget *ReportEngine::createPreviewWidget(bool usePreparedPages, QWidget *parent)
+{
+    Q_D(ReportEngine);
+    if(usePreparedPages)
+        return d->createPreviewWidget((ReportPages)d->m_preparedPages, parent);
+    else
+        return d->createPreviewWidget(parent);
+}
+
 void ReportEngine::setPreviewWindowTitle(const QString &title)
 {
     Q_D(ReportEngine);
@@ -1675,6 +1701,13 @@ bool ReportEngine::printPreparedPages()
 {
     Q_D(ReportEngine);
     return d->printPreparedPages();
+}
+
+/* Перегруженный метод, позволяющий печатать ранее подготовленные страницы отчета на указанном принтере */
+bool ReportEngine::printPreparedPages(QPrinter *printer)
+{
+    Q_D(ReportEngine);
+    return d->printPreparedPages(printer);
 }
 
 void ReportEngine::setShowProgressDialog(bool value)
@@ -1906,6 +1939,7 @@ bool PrintProcessor::printPage(PageItemDesignIntf::Ptr page)
     QRectF printerPageRect = m_printer->pageRect(QPrinter::Millimeter);
     printerPageRect = QRectF(0,0,(printerPageRect.size().width() + rightMargin + leftMargin) * page->unitFactor(),
                                  (printerPageRect.size().height() + bottomMargin + topMargin) * page->unitFactor());
+
     if (page->printBehavior() == PageItemDesignIntf::Split && m_printer->pageLayout().pageSize() != QPageSize((QPageSize::PageSizeId)page->pageSize()) &&
         printerPageRect.width() < page->geometry().width())
     {

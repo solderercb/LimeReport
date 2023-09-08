@@ -53,6 +53,7 @@ public slots:
     void lastPage();
 
     void print();
+    void print(QPrinter *printer);
     void printToPDF();
     void pageNavigatorChanged(int value);
     void saveToFile();
@@ -85,7 +86,6 @@ private:
     QTimer    m_resizeTimer;
     QColor    m_previewPageBackgroundColor;
     QPrinter* m_defaultPrinter;
-    void printPages(QPrinter *printer);
     bool m_scaleChanging;
 };
 

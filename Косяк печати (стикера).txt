@@ -1,0 +1,31 @@
+Сохранённый принтер: Rongta RP4xx Series (перенаправлено 2); на вкладке печати стикера переключение принтера не производилось: стикер распечатан нормально
+
+test_scheduler_handler(), test_scheduler_counter =  0
+===================================== PrintProcessor::printPage() =======================================
+page->printBehavior(): LimeReport::PageItemDesignIntf::Split
+m_printer->pageLayout().pageSize(): QPageSize("Custom (24mm x 14mm)", key="Custom.24x14mm", 68x40pt, id=31)
+page->pageSize(): LimeReport::PageItemDesignIntf::Custom
+m_printer->pageRect(QPrinter::Millimeter): QRectF(0,0 24x14)
+page->geometry(): QRect(0,0 240x140)
+m_printer->pageLayout().margins(): QMarginsF(0, 0, 0, 0)
+left: 0 ; top: 0 ; right: 0 ; bottom: 0
+===================================== PrintProcessor::printPage() =======================================
+page->printBehavior(): LimeReport::PageItemDesignIntf::Split
+m_printer->pageLayout().pageSize(): QPageSize("Custom (24mm x 14mm)", key="Custom.24x14mm", 68x40pt, id=31)
+page->pageSize(): LimeReport::PageItemDesignIntf::Custom
+m_printer->pageRect(QPrinter::Millimeter): QRectF(0,0 24x14)
+page->geometry(): QRect(0,0 240x140)
+m_printer->pageLayout().margins(): QMarginsF(0, 0, 0, 0)
+left: 0 ; top: 0 ; right: 0 ; bottom: 0
+
+==============================================================================================================================
+Сохранённый принтер: Samsung Universal Print Driver (перенаправлено 2); на вкладке печати стикера принтер переключен на Rongta RP4xx Series (перенаправлено 2): распеатан стикер со смещением текста
+test_scheduler_handler(), test_scheduler_counter =  0
+===================================== PrintProcessor::printPage() =======================================
+page->printBehavior(): LimeReport::PageItemDesignIntf::Split
+m_printer->pageLayout().pageSize(): QPageSize("Custom (24mm x 14mm)", key="Custom.24x14mm", 68x40pt, id=31)
+page->pageSize(): LimeReport::PageItemDesignIntf::Custom
+m_printer->pageRect(QPrinter::Millimeter): QRectF(0,0 24x14)
+page->geometry(): QRect(0,0 240x140)
+m_printer->pageLayout().margins(): QMarginsF(12, 12, 12.12, 12.24)
+left: 0 ; top: 0 ; right: 0 ; bottom: 0

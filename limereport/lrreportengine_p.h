@@ -212,6 +212,7 @@ public:
     bool hasActivePreview(){return m_activePreview;}
     PageDesignIntf *createPreviewScene(QObject *parent);
     PreviewReportWidget *createPreviewWidget(QWidget *parent);
+    PreviewReportWidget *createPreviewWidget(ReportPages pages, QWidget *parent);
     QIcon previewWindowIcon() const;
     void setPreviewWindowIcon(const QIcon &previewWindowIcon);
     QString previewWindowTitle() const;
@@ -256,6 +257,7 @@ public:
     bool showPreparedPages(QPrinter *defaultPrinter, PreviewHints hints);
     bool prepareReportPages();
     bool printPreparedPages();
+    bool printPreparedPages(QPrinter *printer);
 signals:
     void    pagesLoadFinished();
     void    datasourceCollectionLoadFinished(const QString& collectionName);

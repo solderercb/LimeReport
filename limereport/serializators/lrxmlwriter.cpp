@@ -49,7 +49,7 @@ void XMLWriter::init()
 {
     m_rootElement=m_doc->createElement("Report");
     QDomNode xmlNode = m_doc->createProcessingInstruction("xml",
-                               "version=\"1.0\" encoding=\"UTF8\"");
+                               "version=\"1.0\" encoding=\"UTF-8\"");
     m_doc->insertBefore(xmlNode,m_doc->firstChild());
     m_doc->appendChild(m_rootElement);
 }

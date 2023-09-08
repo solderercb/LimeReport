@@ -1,5 +1,7 @@
+#include "global.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "tabcommon.h"
 #include "tabprintdialog.h"
 #include "tabreportdesigner.h"
 
@@ -53,8 +55,17 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 
-    userData = new QMap<QString, QVariant>;
-    userData->insert("defaultDocumentPrinter", QString("Microsoft Print To PDF"));  // это значение нужно получить из локального файла
+    userLocalData->insert("DocsPrinter", QString("Microsoft Print To PDF"));  // это значение нужно получить из локального файла
+
+    initUserDbData();
+    initPermissions();
+    initCompanies();
+    initOffices();
+    initGlobalModels();
+
+//    on_pushButton_clicked();
+    on_pushButton_2_clicked();
+//    ui->tabWidget->setCurrentIndex(0);
 }
 
 MainWindow::~MainWindow()
@@ -65,8 +76,6 @@ MainWindow::~MainWindow()
 void MainWindow::some_func()
 {
     qDebug() << "MainWindow::some_func()";
-//    tabReportDesigner *reportDesigner = new tabReportDesigner(this);
-//    reportDesigner->tabCloseRequest();
 }
 
 
@@ -74,25 +83,36 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
 {
     // TODO: проверка типа виджета на вкладке.
 
-//    if (designerWindow->checkNeedToSave())
-    static_cast<tabCommon*>(ui->tabWidget->widget(index))->tabCloseRequest();
-    delete ui->tabWidget->widget(index);
-    ui->tabWidget->removeTab(index);
+    tabCommon &tab = *(static_cast<tabCommon*>(ui->tabWidget->widget(index)));
+    if (tab.tabCloseRequest())   // Перед закрытием  вкладки нужно проверить нет ли несохранённых данных
+    {
+        delete ui->tabWidget->widget(index);
+    }
 }
 
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_pushButton_clicked()    // Дизайнер
 {
 //    qDebug() << "MainWindow::on_pushButton_clicked()";
-    tabReportDesigner *reportDesigner = new tabReportDesigner();
+    tabReportDesigner *reportDesigner = new tabReportDesigner(this, "new_rep");
     ui->tabWidget->addTab(reportDesigner, "Designer");
     ui->tabWidget->setCurrentWidget(reportDesigner);
 }
 
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::on_pushButton_2_clicked()  // Просмотр/печать
 {
-    qDebug() << userData;
-    tabPrintDialog *printDialog = new tabPrintDialog(this);
+
+    QMap<QString, QVariant> report_vars;
+
+//    qDebug() << "MainWindow::on_pushButton_2_clicked()";
+
+    report_vars.insert("repair_id", 24901);    // устанавливаем различные переменные для отчёта. Т. о. я могу передать в отчёт почти всё что угодно
+    report_vars.insert("type", "new_rep");
+//    report_vars.insert("repair_id", 24972);
+//    report_vars.insert("type", "rep_label");
+//    report_vars.insert("ids_list", "27529,27523,27513,27528,27515,27531,27518,27525,27512,27505,27530");
+//    report_vars.insert("type", "sticker1");
+    tabPrintDialog *printDialog = new tabPrintDialog(this, report_vars);
     ui->tabWidget->addTab(printDialog, "Print");
     ui->tabWidget->setCurrentWidget(printDialog);
 }
@@ -100,20 +120,10 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_3_clicked()
 {
-    tabPrintDialog *printDialog = new tabPrintDialog(this);
-
-    DataFile = new QByteArray;
     qDebug() << "MainWindow::on_pushButton_3_clicked()";
-    QFile  CurrentFile(QApplication::applicationDirPath() + "\\demo_reports\\priemka.lrxml");  // файл отчета (будет загружаться из БД)
-
-    if(!CurrentFile.open(QIODevice::ReadOnly))
-        qDebug() << "Can't open .lrxml";
-    *DataFile = CurrentFile.readAll();
-//    int S = DataFile->size();
-
-//    printDialog->loadTmpReportTemplate(CurrentFile.fileName());
-    printDialog->loadReportTemplate(DataFile);
-
+    qDebug() << *userDbData;
+//    QWidget *printDialo   g = new QWidget();
+    tabPrintDialog *printDialog = new tabPrintDialog(nullptr);
     ui->tabWidget->addTab(printDialog, "Print");
     ui->tabWidget->setCurrentWidget(printDialog);
 }
@@ -155,5 +165,71 @@ void MainWindow::on_pushButton_4_clicked()
     m_report->prepareReportPages();
 //    m_report->previewReport();
 //    m_report->printReport(printer);
+}
+
+void MainWindow::on_pushButton_5_clicked()
+{
+    printerSettings();
+}
+
+void MainWindow::printerSettings(QPrinter *printer)
+{
+    DWORD size;
+    bool result;
+    result = GetDefaultPrinter (NULL, &size);
+//    LPWSTR pname = (LPWSTR)malloc(size+1);
+//    LPTSTR pname = (LPTSTR)malloc(size+1);
+    QString qString("doPDF 8 (перенаправлено 2)\0");
+    LPWSTR pname = reinterpret_cast<wchar_t *>(qString.data());
+    size = qString.length();
+    qDebug() << "LEN: " << size;
+    result = GetDefaultPrinter(pname, &size);
+//    QString *printername = (QString*)(pname);
+
+    QStringList printersList = QPrinterInfo::availablePrinterNames();
+    qDebug() << printersList;
+
+    if(!result){
+       qDebug() << "GetDefaultPrinter err: " << GetLastError();
+    }
+    else {
+        pname[size] = 0;
+        qDebug() << "PRINTER NAME: " << ((QString)*(pname)) << ", LEN: " << size;
+    }
+
+//    QString name = mDefaultPrinter->printerName();
+
+    //These give more or less odd results
+    //wchar_t* w_str = const_cast<wchar_t*>(name.toStdWString().c_str());
+    //LPWSTR w_str = (LPWSTR)name.utf16();
+    /*wchar_t* w_str = (wchar_t*) malloc (sizeof(wchar_t)*name.length()+1);
+    int len = name.toWCharArray(w_str);
+    w_str[len]=0;*/
+
+    //OpenPrinter example uses LPHANDLE but that didn't work
+    HANDLE hPrinter = NULL;
+    PRINTER_DEFAULTS pd;
+    ZeroMemory(&pd, sizeof(pd));
+    pd.DesiredAccess = PRINTER_ALL_ACCESS;
+
+    qDebug() << "TRYING GET PRINTER: " /*<< name*/;
+//    OpenPrinter(pname, &hPrinter, &pd)
+    if(!OpenPrinter(pname, &hPrinter, NULL)) {
+        qDebug() << "GOT PRINTER ERR STATE: " /*<< IsPrinterError(hPrinter)*/;
+    }
+    qDebug() << "hPrinter = " << hPrinter;
+
+    qDebug() << "mainwindow winId(): " << winId();
+    if(!PrinterProperties((HWND)winId(), hPrinter)) {
+        qDebug() << "GOT ERR PrinterProperties() dialog: ";
+    }
+    else
+        qDebug() << "PrinterProperties() dialog closed";
+
+    ClosePrinter(hPrinter);
+//    free(hPrinter);
+//    free(pname);
+
+//    emit printReceiptComplete(success);
 }
 

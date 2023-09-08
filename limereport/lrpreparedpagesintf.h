@@ -12,6 +12,20 @@ public:
     virtual QString saveToString()  = 0;
     virtual QByteArray  saveToByteArray() = 0;
     virtual void clear() = 0;
+    struct PageProps{
+        QPageSize pageSize;
+        int orientation;
+        QRect geometry;
+        int leftMargin;
+        int topMargin;
+        int rightMargin;
+        int bottomMargin;
+        bool isSetPageSizeToPrinter;
+        bool endlessHeight;
+        int heightMM;
+        int widthMM;
+    };
+    virtual PageProps pageProperties(int page = 0) = 0;
 };
 } //namespace LimeReport
 #endif // LRPREPAREDPAGESINTF_H
