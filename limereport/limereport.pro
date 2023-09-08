@@ -89,10 +89,10 @@ win32 {
         EXPORT_LIBS ~= s,/,\\,g
         EXPORT_BIN ~= s,/,\\,g
         DEST_DIR ~= s,/,\\,g
-	EXTRA_FILES ~= s,/,\\,g
-	BUILD_DIR ~= s,/,\\,g
+        EXTRA_FILES ~= s,/,\\,g
+        BUILD_DIR ~= s,/,\\,g
         DEST_LIBS ~=  s,/,\\,g
-	DEST_INCLUDE_DIR ~= s,/,\\,g
+        DEST_INCLUDE_DIR ~= s,/,\\,g
         PWDW = $${PWD}
         PWDW ~= s,/,\\,g
 
@@ -203,3 +203,4 @@ CONFIG(build_translations) {
 }
 
 #### EN AUTOMATIC TRANSLATIONS
+

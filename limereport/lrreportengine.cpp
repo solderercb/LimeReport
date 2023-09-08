@@ -407,7 +407,7 @@ bool ReportEnginePrivate::printReport(QPrinter* printer)
     if (printer&&printer->isValid()){
         try{
             bool designTime = dataManager()->designTime();
-			dataManager()->setDesignTime(false);
+            dataManager()->setDesignTime(false);
             ReportPages pages = renderToPages();
             dataManager()->setDesignTime(designTime);
             if (pages.count()>0){
@@ -468,7 +468,7 @@ bool ReportEnginePrivate::exportReport(QString exporterName, const QString &file
         if (fn.isEmpty()){
             QString defaultFileName = reportName().split(".")[0];
             QString filter = QString("%1 (*.%2)").arg(e->exporterName()).arg(e->exporterFileExt());
-            QString fn = QFileDialog::getSaveFileName(0, tr("%1 file name").arg(e->exporterName()), defaultFileName, filter);
+            fn = QFileDialog::getSaveFileName(0, tr("%1 file name").arg(e->exporterName()), defaultFileName, filter);
         }
         if (!fn.isEmpty()){
             QFileInfo fi(fn);
@@ -492,7 +492,7 @@ bool ReportEnginePrivate::showPreviewWindow(ReportPages pages, PreviewHints hint
     Q_UNUSED(printer)
     if (pages.count()>0){
         Q_Q(ReportEngine);
-        PreviewReportWindow* w = new PreviewReportWindow(q, 0, settings());
+        PreviewReportWindow* w = new PreviewReportWindow(q, QApplication::activeWindow(), settings());
         w->setWindowFlags(Qt::Dialog|Qt::WindowMaximizeButtonHint|Qt::WindowCloseButtonHint| Qt::WindowMinMaxButtonsHint);
         w->setAttribute(Qt::WA_DeleteOnClose,true);
         w->setWindowModality(Qt::ApplicationModal);
@@ -536,7 +536,7 @@ bool ReportEnginePrivate::showPreviewWindow(ReportPages pages, PreviewHints hint
 }
 
 void ReportEnginePrivate::previewReport(PreviewHints hints)
-{ 
+{
     previewReport(0, hints);
 }
 
@@ -672,21 +672,21 @@ bool ReportEnginePrivate::slotLoadFromFile(const QString &fileName)
 {
     EASY_BLOCK("ReportEnginePrivate::slotLoadFromFile")
     PreviewReportWindow  *currentPreview = qobject_cast<PreviewReportWindow *>(m_activePreview);
-   
+
     if (!QFile::exists(fileName))
     {
        if ( hasActivePreview() )
-       {          
+       {
           QMessageBox::information( NULL,
                                     tr( "Report File Change" ),
                                     tr( "The report file \"%1\" has changed names or been deleted.\n\nThis preview is no longer valid." ).arg( fileName )
                                     );
-          
+
           clearReport();
-          
+
           currentPreview->close();
        }
-       
+
        return false;
     }
 
@@ -753,8 +753,8 @@ void ReportEnginePrivate::designReport(bool showModal)
     if (designerWindow){
         dataManager()->setDesignTime(true);
         connect(designerWindow, SIGNAL(destroyed(QObject*)), this, SLOT(slotDesignerWindowDestroyed(QObject*)));
-#ifdef Q_OS_WIN    
-        designerWindow->setWindowModality(Qt::ApplicationModal);
+#ifdef Q_OS_WIN
+        designerWindow->setWindowModality(Qt::NonModal);
 #endif
         if (!showModal){
             designerWindow->show();;
@@ -867,7 +867,7 @@ bool ReportEnginePrivate::saveToFile(const QString &fileName)
     QScopedPointer< ItemsWriterIntf > writer(new XMLWriter());
     writer->setPassPhrase(m_passPhrase);
     writer->putItem(this);
-    m_fileName=fn;   
+    m_fileName=fn;
     bool saved = writer->saveToFile(fn);
 
     foreach (ConnectionDesc* connection, dataManager()->conections()) {
@@ -1435,7 +1435,7 @@ ReportEngine::ReportEngine(QObject *parent)
     connect(d, SIGNAL(loadFinished()), this, SIGNAL(loadFinished()));
     connect(d, SIGNAL(cleared()), this, SIGNAL(cleared()));
     connect(d, SIGNAL(printedToPDF(QString)), this, SIGNAL(printedToPDF(QString)));
-    
+
     connect(d, SIGNAL(getAvailableDesignerLanguages(QList<QLocale::Language>*)),
             this, SIGNAL(getAvailableDesignerLanguages(QList<QLocale::Language>*)));
     connect(d, SIGNAL(currentDefaultDesignerLanguageChanged(QLocale::Language)),

@@ -49,6 +49,7 @@ SOURCES += \
     $$REPORT_PATH/items/lrabstractlayout.cpp \
     $$REPORT_PATH/items/lrchartitem.cpp \
     $$REPORT_PATH/items/lrchartitemeditor.cpp \
+    $$REPORT_PATH/items/lrchartaxiseditor.cpp \
     $$REPORT_PATH/items/charts/lrhorizontalbarchart.cpp \
     $$REPORT_PATH/items/charts/lrlineschart.cpp \
     $$REPORT_PATH/items/charts/lrgridlineschart.cpp \
@@ -79,12 +80,15 @@ SOURCES += \
     $$REPORT_PATH/lrreporttranslation.cpp \
     $$REPORT_PATH/exporters/lrpdfexporter.cpp \
     $$REPORT_PATH/lraxisdata.cpp \
-    $$REPORT_PATH/lrpreparedpages.cpp
+    $$REPORT_PATH/lrpreparedpages.cpp \
+    $$REPORT_PATH/items/lrpageeditor.cpp \
+    $$REPORT_PATH/items/lrborderframeeditor.cpp \
+    $$REPORT_PATH/items/lrbordereditor.cpp
 
 CONFIG(staticlib) {
     SOURCES += $$REPORT_PATH/lrfactoryinitializer.cpp
 }
-    
+
 CONFIG(zint) {
     SOURCES += $$REPORT_PATH/items/lrbarcodeitem.cpp
 }
@@ -134,6 +138,7 @@ HEADERS += \
     $$REPORT_PATH/items/lrabstractlayout.h \
     $$REPORT_PATH/items/lrchartitem.h \
     $$REPORT_PATH/items/lrchartitemeditor.h \
+    $$REPORT_PATH/items/lrchartaxiseditor.h \
     $$REPORT_PATH/items/charts/lrhorizontalbarchart.h \
     $$REPORT_PATH/items/charts/lrlineschart.h \
     $$REPORT_PATH/items/charts/lrgridlineschart.h \
@@ -147,7 +152,7 @@ HEADERS += \
     $$REPORT_PATH/lrcollection.h \
     $$REPORT_PATH/lrpagedesignintf.h \
     $$REPORT_PATH/lrreportengine_p.h \
-    $$REPORT_PATH/lrdatasourcemanager.h \    
+    $$REPORT_PATH/lrdatasourcemanager.h \
     $$REPORT_PATH/lrreportrender.h \
     $$REPORT_PATH/lrpreviewreportwindow.h \
     $$REPORT_PATH/lrpreviewreportwidget.h \
@@ -173,11 +178,14 @@ HEADERS += \
     $$REPORT_PATH/lrreporttranslation.h \
     $$REPORT_PATH/lrreportdesignwindowintrerface.h \
     $$REPORT_PATH/lrexporterintf.h \
-    $$REPORT_PATH/lrexportersfactory.h \	
+    $$REPORT_PATH/lrexportersfactory.h \
     $$REPORT_PATH/exporters/lrpdfexporter.h \
     $$REPORT_PATH/lrpreparedpages.h \
     $$REPORT_PATH/lraxisdata.h \
-    $$REPORT_PATH/lrpreparedpagesintf.h 
+    $$REPORT_PATH/lrpreparedpagesintf.h \
+    $$REPORT_PATH/items/lrpageeditor.h \
+    $$REPORT_PATH/items/lrborderframeeditor.h \
+    $$REPORT_PATH/items/lrbordereditor.h
 
 CONFIG(staticlib) {
     HEADERS += $$REPORT_PATH/lrfactoryinitializer.h
@@ -198,8 +206,12 @@ FORMS += \
     $$REPORT_PATH/lraboutdialog.ui \
     $$REPORT_PATH/lrsettingdialog.ui \
     $$REPORT_PATH/items/lrchartitemeditor.ui \
+    $$REPORT_PATH/items/lrchartaxiseditor.ui \
     $$REPORT_PATH/items/lrimageitemeditor.ui \
-    $$REPORT_PATH/scripteditor/lrscripteditor.ui
+    $$REPORT_PATH/scripteditor/lrscripteditor.ui \
+    $$REPORT_PATH/items/lrpageeditor.ui \
+    $$REPORT_PATH/items/lrborderframeeditor.ui \
+    $$REPORT_PATH/items/lrbordereditor.ui
 
 RESOURCES += \
     $$REPORT_PATH/report.qrc \
