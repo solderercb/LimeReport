@@ -10,10 +10,6 @@
 # uncomment to enable easy_profiler
 #CONFIG *= easy_profiler
 
-isEmpty(BINARY_RESULT_DIR) {
-    BINARY_RESULT_DIR = $${PWD}
-}
-
 !CONFIG(no_build_translations) {
     CONFIG *= build_translations
 }
@@ -125,12 +121,14 @@ win32 {
     }
 }
 
-SRC_ROOT       = $${PWD}     # LimeReport sources
-
-!exists($$SRC_ROOT/limereport.outpwd){
-    error("Something went wrong, can't find" $$SRC_ROOT/limereport.outpwd)
+if(exists(../3rdparty-common.pri)){
+    include(../3rdparty-common.pri)
+} else {
+    isEmpty(BUILD_DIR) {
+        BUILD_DIR = $${PWD}
+    }
 }
-include($$SRC_ROOT/limereport.outpwd)
+
 DEST_LIBS      = $${BUILD_DIR}/lib                        # e.g. LimeReport/Desktop_Qt_5_15_4_mingw81_64/release/lib
 DEST_BINS      = $${BUILD_DIR}/$${TARGET}                 # e.g. LimeReport/Desktop_Qt_5_15_4_mingw81_64/release/designer
 
